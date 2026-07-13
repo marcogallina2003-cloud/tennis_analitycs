@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Surface {
+  HARD
+  CLAY
+  GRASS
+}
+
+model Player {
+  id          Int       @id @default(autoincrement())
+
+  firstName   String?
+  lastName    String
+  country     String?
+  birthDate   DateTime?
+  height      Int?
+  hand        String?
+
+  wins        Match[]   @relation("Winner")
+  losses      Match[]   @relation("Loser")
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Match {
+  id            Int       @id @default(autoincrement())
+
+  date          DateTime
+
+  tournament    String
+
+  surface       Surface
+
+  score         String
+
+  winnerId      Int
+  loserId       Int
+
+  winner        Player    @relation("Winner", fields: [winnerId], references: [id])
+  loser         Player    @relation("Loser", fields: [loserId], references: [id])
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
